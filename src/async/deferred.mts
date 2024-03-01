@@ -29,6 +29,7 @@ THE SOFTWARE.
 export type Resolve<T> = (value: T) => void
 export type Reject = (error: Error) => void
 
+/** A deferred Promise type that supports exterior async value resolution */
 export class Deferred<T = void> {
   #resolveFunction!: Resolve<T>
   #rejectFunction!: Reject

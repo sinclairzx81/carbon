@@ -26,23 +26,19 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-import { Listener } from './listener.mjs'
-import { Socket } from './socket.mjs'
+import * as Runtime from '../../runtime/index.mjs'
 import * as Core from '../core/index.mjs'
-import * as WebRtc from '../../browser/webrtc/index.mjs'
 
 // ------------------------------------------------------------------
 // Listen
 // ------------------------------------------------------------------
-export function listen(options: Core.ListenOptions, callback: Core.ListenCallback): Listener {
-  return new Listener(options, callback)
+export function listen(options: Core.ListenOptions, callback: Core.ListenCallback): Promise<Core.Listener> {
+  throw new Runtime.RuntimeNotSupportedException('Net')
 }
+
 // ------------------------------------------------------------------
 // Connect
 // ------------------------------------------------------------------
-export async function connect(options: Core.ConnectOptions): Promise<Socket> {
-  const hostname = options.hostname ?? 'localhost'
-  const port = options.port
-  const [peer, datachannel] = await WebRtc.connect(hostname, port)
-  return new Socket(peer, datachannel)
+export function connect(options: Core.ConnectOptions): Promise<Core.Socket> {
+  throw new Runtime.RuntimeNotSupportedException('Net')
 }

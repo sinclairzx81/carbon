@@ -39,7 +39,7 @@ export namespace PathUtil {
   export const CHAR_BACKWARD_SLASH = 92
   export const CHAR_COLON = 58
   export const CHAR_QUESTION_MARK = 63
-  export const platformIsWin32 = Os.name() === 'win32'
+  export const platformIsWin32 = Os.type() === 'win32'
 
   export function isPathSeparator(code: number) {
     return code === CHAR_FORWARD_SLASH || code === CHAR_BACKWARD_SLASH

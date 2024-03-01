@@ -28,7 +28,7 @@ THE SOFTWARE.
 
 import * as Core from '../core/index.mjs'
 import * as Async from '../../async/index.mjs'
-import * as System from '../../system/index.mjs'
+import * as Config from '../../config/index.mjs'
 import * as Dispose from '../../dispose/index.mjs'
 
 export class Listener implements Dispose.Dispose {
@@ -66,7 +66,7 @@ export class Listener implements Dispose.Dispose {
   public async dispose(): Promise<void> {
     this.#abort.abort()
     await this.#server.finished
-    await Async.delay(System.listenerCloseDelay)
+    await Async.delay(Config.listenerCloseDelay)
   }
   // ----------------------------------------------------------------
   // Fetch

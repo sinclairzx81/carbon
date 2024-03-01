@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-import * as IndexedDb from '../../browser/indexeddb/index.mjs'
+import * as IndexedDb from './indexeddb/index.mjs'
 import * as Buffer from '../../buffer/index.mjs'
 import * as Path from '../../path/index.mjs'
 import * as Core from '../core/index.mjs'

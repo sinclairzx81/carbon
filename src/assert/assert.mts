@@ -37,9 +37,10 @@ export class AssertError extends Error {
   }
 }
 // ------------------------------------------------------------------
-// Has
+// HasKey
 // ------------------------------------------------------------------
-export function hasProperty<K extends PropertyKey>(value: unknown, key: K): asserts value is { [_ in keyof K]: unknown } {
+/** Asserts the given value contains the given key */
+export function hasKey<K extends PropertyKey>(value: unknown, key: K): asserts value is { [_ in keyof K]: unknown } {
   if (typeof value === 'object' && value !== null && key in value) return
   throw new AssertError(`Expect value to have property '${key as string}'`, value, { [key]: undefined })
 }

@@ -33,7 +33,7 @@ async function Resolve(): Promise<typeof import('./core/index.mjs')> {
   if (Runtime.name() === 'browser') {
     return await import('./posix/index.mjs')
   }
-  switch (Os.name()) {
+  switch (Os.type()) {
     case 'win32':
       return await import('./windows/index.mjs')
     default:

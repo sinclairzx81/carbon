@@ -6,9 +6,8 @@ function range(length: number) {
   return Array.from({ length }).map((_, index) => index)
 }
 async function echo(inputs: Uint8Array[]): Promise<Uint8Array[]> {
-  const listener = Http.listen({ port: 5000 }, async (request) => new Response(request.body))
-  const protocol = Runtime.isBrowser() ? 'webrtc' : 'http'
-  const [endpoint, method] = [`${protocol}://localhost:5000/`, 'post']
+  const listener = await Http.listen({ port: 5000 }, async (request) => new Response(request.body))
+  const [endpoint, method] = [`http://localhost:5000/`, 'post']
   const buffers = await Promise.all(inputs.map((body) => Http.fetch(endpoint, { method, body }).then((res) => res.arrayBuffer())))
   await listener.dispose()
   return buffers.map((buffer) => new Uint8Array(buffer))
@@ -17,6 +16,8 @@ async function echo(inputs: Uint8Array[]): Promise<Uint8Array[]> {
 // Test
 // ------------------------------------------------------------------
 Test.describe('Http:Response:ArrayBuffer', () => {
+  Test.exclude(() => Runtime.isBrowser())
+
   // ----------------------------------------------------------------
   // Once
   // ----------------------------------------------------------------

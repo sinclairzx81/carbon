@@ -130,7 +130,7 @@ export class StdoutReporter implements Reporter {
     this.#write(Ansi.color.lightBlue)
     this.#write('os')
     this.#write(Ansi.reset)
-    this.#write(`:      ${Os.name()}`)
+    this.#write(`:      ${Os.type()}`)
     this.#write(Ansi.reset)
     this.#newline()
 

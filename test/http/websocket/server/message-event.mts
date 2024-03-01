@@ -1,9 +1,9 @@
 import { Test, Assert, Http, Buffer, Runtime } from '@sinclair/carbon'
 
 // prettier-ignore
-export function resolveMessageEvent<T extends (event: MessageEvent) => unknown>(callback: T, data: any = 'hello'): Promise<ReturnType<T>> {
+export async function resolveMessageEvent<T extends (event: MessageEvent) => unknown>(callback: T, data: any = 'hello'): Promise<ReturnType<T>> {
   let property: any = null
-  const listener = Http.listen({ port: 5000 }, (request) => {
+  const listener = await Http.listen({ port: 5000 }, (request) => {
     return Http.upgrade(request, (socket) => {
       socket.on('message', (message) => { property = callback(message); socket.close() })
     })
@@ -20,6 +20,8 @@ export function resolveMessageEvent<T extends (event: MessageEvent) => unknown>(
   })
 }
 Test.describe('Http:ServerWebSocket:MessageEvent:Properties', () => {
+  Test.exclude(() => Runtime.isBrowser())
+
   let event: MessageEvent<any>
   Test.before(async () => {
     event = await resolveMessageEvent((event) => event)

@@ -1,3 +1,5 @@
+import * as Fs from 'node:fs'
+
 // --------------------------------------------------------------------------
 // Targets
 // --------------------------------------------------------------------------
@@ -5,7 +7,6 @@ const targets = {
   start: 'target/start',
   test: 'target/test',
   build: 'target/build',
-  website: 'target/website',
 }
 // --------------------------------------------------------------------------
 // Shell
@@ -21,7 +22,7 @@ export async function clean() {
 // Format
 // -------------------------------------------------------------------------------
 export async function format() {
-  await shell('prettier --no-semi --single-quote --print-width 240 --trailing-comma all --write src test examples website hammer.mjs')
+  await shell('prettier --no-semi --single-quote --print-width 240 --trailing-comma all --write src test examples hammer.mjs')
 }
 // -------------------------------------------------------------------------------
 // Upgrade
@@ -47,25 +48,23 @@ async function build_package() {
   await folder(targets.build).add('license')
   await shell(`cd ${targets.build} && npm pack`)
 }
+async function build_asserts() {
+  const { version } = JSON.parse(Fs.readFileSync('package.json', 'utf8'))
+  await shell(`cd ${targets.build} && attw sinclair-carbon-${version}.tgz --ignore-rules untyped-resolution cjs-resolves-to-esm`)
+}
 export async function build() {
   await build_package()
+  await build_asserts()
 }
 // --------------------------------------------------------------------------
 // Start
 // --------------------------------------------------------------------------
 // prettier-ignore
-export async function start_website() {
-  await Promise.all([
-    shell(`hammer serve website/index.html --dist ${targets.website}`), 
-    shell(`hammer run examples/hub/index.mts --dist target/hub`)
-  ])
-}
-// prettier-ignore
 export async function start_browser(example = 'default') {
-  await Promise.all([
-    shell(`hammer serve examples/${example}/index.html --dist ${targets.start}`), 
-    shell(`hammer run examples/hub/index.mts --dist target/hub`)
-  ])
+  require('http').createServer((_, res) => res.end('<html><head></head></html>')).listen(5240)
+  const watch = build_and_watch_example(example)
+  const drift = shell(`drift wait 500 url http://localhost:5240 run ./${targets.start}/index.mjs`)
+  await Promise.all([watch, drift])
 }
 export async function start_bun(example = 'default') {
   const watch = build_and_watch_example(example)
@@ -74,7 +73,7 @@ export async function start_bun(example = 'default') {
 }
 export async function start_deno(example = 'default') {
   const watch = build_and_watch_example(example)
-  const start = delay_shell(`deno run --allow-all --unstable --watch --reload ./${targets.start}/index.mjs`)
+  const start = delay_shell(`deno run --allow-all --unstable-worker-options --watch --reload ./${targets.start}/index.mjs`)
   await Promise.all([watch, start])
 }
 export async function start_node(example = 'default') {
@@ -101,7 +100,7 @@ export async function test_bun(filter = '') {
 }
 export async function test_deno(filter = '') {
   await build_test(targets)
-  await shell(`deno run --allow-net --allow-read --allow-write --allow-env --reload --no-prompt --quiet --unstable ./${targets.test}/index.mjs ${filter}`)
+  await shell(`deno run --allow-net --allow-read --allow-write --allow-env --reload --no-prompt --unstable-worker-options --quiet ./${targets.test}/index.mjs ${filter}`)
 }
 export async function test_node(filter = '') {
   await build_test(targets)
@@ -112,4 +111,14 @@ export async function test(filter = '') {
   await test_bun(filter)
   await test_deno(filter)
   await test_node(filter)
+}
+// --------------------------------------------------------------------------
+// Publish
+// --------------------------------------------------------------------------
+export async function publish(otp) {
+  const { version } = JSON.parse(Fs.readFileSync('package.json', 'utf8'))
+  if (version.includes('-dev')) throw Error(`package version should not include -dev specifier`)
+  await shell(`cd ${targets.build} && npm publish sinclair-carbon-${version}.tgz --access=public --otp ${otp}`)
+  await shell(`git tag ${version}`)
+  await shell(`git push origin ${version}`)
 }

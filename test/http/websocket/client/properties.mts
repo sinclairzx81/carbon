@@ -1,14 +1,14 @@
 import { Test, Assert, Http, Runtime } from '@sinclair/carbon'
 
-export function getWebSocketProperty<T extends (socket: Http.WebSocket) => unknown>(callback: T): Promise<ReturnType<T>> {
+export async function getWebSocketProperty<T extends (socket: Http.WebSocket) => unknown>(callback: T): Promise<ReturnType<T>> {
   let property: any = null
-  const listener = Http.listen({ port: 5000 }, (request) => {
+  const listener = await Http.listen({ port: 5000 }, (request) => {
     return Http.upgrade(request, (socket) => {
       socket.close()
     })
   })
-  const protocol = Runtime.isBrowser() ? 'webrtc' : 'ws'
-  const socket = new Http.WebSocket(`${protocol}://localhost:5000`)
+
+  const socket = new Http.WebSocket(`ws://localhost:5000`)
   property = callback(socket)
   return new Promise((resolve, reject) => {
     socket.on('error', (error) => reject(error))
@@ -19,6 +19,8 @@ export function getWebSocketProperty<T extends (socket: Http.WebSocket) => unkno
   })
 }
 Test.describe('Http:WebSocket:Properties', () => {
+  Test.exclude(() => Runtime.isBrowser())
+
   let socket!: Http.WebSocket
   Test.before(async () => {
     socket = await getWebSocketProperty((socket) => socket)

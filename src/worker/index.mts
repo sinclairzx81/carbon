@@ -39,7 +39,7 @@ async function Resolve(): Promise<typeof import('./core/index.mjs')> {
     case 'node':
       return await import('./node/index.mjs')
     default:
-      throw new Runtime.RuntimeNotSupportedException('Worker: Runtime not supported')
+      throw new Runtime.RuntimeNotSupportedException('Worker')
   }
 }
 const Core = await Resolve()

@@ -35,6 +35,7 @@ export interface DebounceOptions {
   /** Dispatch the last operation at end of debounce window. Default is false */
   dispatchLast?: boolean
 }
+/** A Debounce utility that can limit repeated access on a resource. */
 export class Debounce {
   readonly #millisecond: number
   readonly #deferred: boolean

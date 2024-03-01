@@ -26,27 +26,27 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-import * as Guard from '../guard/index.mjs'
+import * as Value from '../value/index.mjs'
 
 // --------------------------------------------------------------------------
 // Equality
 // --------------------------------------------------------------------------
-function EqualsTypedArray(left: Guard.TypedArrayType, right: unknown): any {
-  if (!Guard.isTypedArray(right) || left.length !== right.length || Object.getPrototypeOf(left).constructor.name !== Object.getPrototypeOf(right).constructor.name) return false
+function EqualsTypedArray(left: Value.TypedArrayType, right: unknown): any {
+  if (!Value.IsTypedArray(right) || left.length !== right.length || Object.getPrototypeOf(left).constructor.name !== Object.getPrototypeOf(right).constructor.name) return false
   return left.every((value, index) => Equal(value, right[index]))
 }
 function EqualsDate(left: Date, right: unknown): any {
-  return Guard.isDate(right) && left.getTime() === right.getTime()
+  return Value.IsDate(right) && left.getTime() === right.getTime()
 }
 function EqualsMap(left: Map<unknown, unknown>, right: unknown) {
-  if (!Guard.isMap(right) || left.size !== right.size) return false
+  if (!Value.IsMap(right) || left.size !== right.size) return false
   for (const [key, value] of left) {
     if (!Equal(value, right.get(key))) return false
   }
   return true
 }
 function EqualsSet(left: Set<unknown>, right: unknown) {
-  if (!Guard.isSet(right) || left.size !== right.size) return false
+  if (!Value.IsSet(right) || left.size !== right.size) return false
   for (const leftValue of left) {
     let found = false
     for (const rightValue of right) {
@@ -61,18 +61,18 @@ function EqualsSet(left: Set<unknown>, right: unknown) {
   }
   return true
 }
-function EqualsArray(left: Guard.ArrayType, right: unknown): any {
-  if (!Guard.isArray(right) || left.length !== right.length) return false
+function EqualsArray(left: Value.ArrayType, right: unknown): any {
+  if (!Value.IsArray(right) || left.length !== right.length) return false
   return left.every((value, index) => Equal(value, right[index]))
 }
-function EqualsObject(left: Guard.ObjectType, right: unknown): boolean {
-  if (!Guard.isObject(right) || Guard.isInstanceObject(right)) return false
+function EqualsObject(left: Value.ObjectType, right: unknown): boolean {
+  if (!Value.IsObject(right) || Value.IsInstanceObject(right)) return false
   const leftKeys = [...Object.keys(left), ...Object.getOwnPropertySymbols(left)]
   const rightKeys = [...Object.keys(right), ...Object.getOwnPropertySymbols(right)]
   if (leftKeys.length !== rightKeys.length) return false
   return leftKeys.every((key) => Equal(left[key], right[key]))
 }
-function EqualsValueType(left: Guard.ValueType, right: unknown): any {
+function EqualsValueType(left: Value.ValueType, right: unknown): any {
   return left === right
 }
 // --------------------------------------------------------------------------
@@ -82,13 +82,13 @@ function EqualsValueType(left: Guard.ValueType, right: unknown): any {
 export function Equal<T>(left: T, right: unknown): right is T {
   // prettier-ignore
   return (
-    Guard.isTypedArray(left) ? EqualsTypedArray(left, right) :
-    Guard.isDate(left) ? EqualsDate(left, right) :
-    Guard.isMap(left) ? EqualsMap(left, right) :
-    Guard.isSet(left) ? EqualsSet(left, right) :
-    Guard.isArray(left) ? EqualsArray(left, right) :
-    Guard.isObject(left) ? EqualsObject(left, right) :
-    Guard.isValueType(left) ? EqualsValueType(left, right) :
+    Value.IsTypedArray(left) ? EqualsTypedArray(left, right) :
+    Value.IsDate(left) ? EqualsDate(left, right) :
+    Value.IsMap(left) ? EqualsMap(left, right) :
+    Value.IsSet(left) ? EqualsSet(left, right) :
+    Value.IsArray(left) ? EqualsArray(left, right) :
+    Value.IsObject(left) ? EqualsObject(left, right) :
+    Value.IsValueType(left) ? EqualsValueType(left, right) :
     false
   )
 }

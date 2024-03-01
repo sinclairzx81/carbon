@@ -1,18 +1,18 @@
-import { Net, Buffer, Benchmark } from '@sinclair/carbon'
-import { Value } from '@sinclair/typebox/value'
+import { Buffer, Net } from '@sinclair/carbon'
 
-const buffer = Buffer.random(100000)
-console.log('sent', Value.Hash(buffer))
-
-Net.listen({ port: 5002 }, (socket) => {
-  socket.write(buffer)
+// start listener on port 5002
+const listener = await Net.listen({ port: 5002 }, (socket) => {
+  socket.write(Buffer.encode('hello 1\n'))
+  socket.write(Buffer.encode('hello 2\n'))
+  socket.write(Buffer.encode('hello 3\n'))
   socket.close()
 })
 
-Benchmark.runAsync({ concurrency: 32, iterations: 1000 }, async () => {
-  const buffers: any[] = []
-  for await (const buffer of await Net.connect({ port: 5002 })) {
-    buffers.push(buffer)
-  }
-  console.log('recv', Value.Hash(Buffer.concat(buffers)))
-})
+// connect to listener and receive data.
+const socket = await Net.connect({ port: 5002 })
+for await (const buffer of socket) {
+  console.log(Buffer.decode(buffer))
+}
+console.log('done')
+
+await listener.dispose()

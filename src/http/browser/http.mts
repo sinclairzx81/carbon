@@ -26,26 +26,24 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
+import * as Runtime from '../../runtime/index.mjs'
 import * as Core from '../core/index.mjs'
-import { Listener, UpgradeMap } from './listener.mjs'
-import { carbonFetch } from './fetch.mjs'
 
 // ------------------------------------------------------------------
 // Listen
 // ------------------------------------------------------------------
-export function listen(options: Core.ListenOptions, callback: Core.ListenCallback): Core.Listener {
-  return new Listener(options, callback)
+export function listen(options: Core.ListenOptions, callback: Core.ListenCallback): Promise<Core.Listener> {
+  throw new Runtime.RuntimeNotSupportedException('Http.listen')
 }
 // ------------------------------------------------------------------
 // Upgrade
 // ------------------------------------------------------------------
 export async function upgrade(request: Request, callback: Core.UpgradeCallback): Promise<Response> {
-  UpgradeMap.set(request, callback)
-  return new Response()
+  throw new Runtime.RuntimeNotSupportedException('Http.upgrade')
 }
 // ------------------------------------------------------------------
 // Fetch
 // ------------------------------------------------------------------
 export function fetch(input: URL | Request | string, init?: RequestInit): Promise<Response> {
-  return typeof input === 'string' && input.startsWith('webrtc://') ? carbonFetch(input, init) : globalThis.fetch(input, init)
+  return globalThis.fetch(input, init)
 }

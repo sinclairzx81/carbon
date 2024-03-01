@@ -6,7 +6,7 @@ async function createWorker() {
   return worker
 }
 Test.describe('Worker:Worker', () => {
-  Test.exclude(() => Runtime.isNode() && Os.name() === 'darwin')
+  Test.exclude(() => Runtime.isNode() && Os.type() === 'darwin')
   Test.exclude(() => Runtime.isBrowser())
 
   // ----------------------------------------------------------------

@@ -2,9 +2,9 @@
 
 <h1>Carbon</h1>
 
-<p>Common Platform Abstraction Layer for Node Deno Bun and Web Browsers</p>
+<p>Compatibility Layer for Node Deno and Bun</p>
 
-<img src="carbon.png?raw=true" />
+<img src="https://github.com/sinclairzx81/carbon/blob/main/carbon.png?raw=true" />
 
 <br />
 <br />
@@ -20,109 +20,87 @@
 $ npm install @sinclair/carbon
 ```
 
-## Usage
+## Overview
 
-Run the same code in Node, Bun, Deno and Web Browser environments.
+Carbon is a cross platform compatibility layer for Node, Deno and Bun. It is written as a set of foundational API's that provide a uniform way to drive core level functionality provided by modern JavaScript runtimes.
+
+License MIT
+
+## Imports
+
+Carbon uses a top level import scheme to bring in API's. The following imports a few of them.
+
+```typescript
+import { Http, Fs, Runtime, Async, Channel } from '@sinclair/carbon'
+```
+Individual API functions can be imported via submodule path.
+
+```typescript
+import { listen, fetch } from '@sinclair/carbon/http'
+```
+
+## Features
+
+Carbon provides several API's that provide a uniform way to interface with core functionality provided by each runtime. It is built exclusively for ESM and uses platform detection + dynamic ESM imports to load specialized implementations for each runtime. For performance, Carbon targets the core standard interfaces specific to each runtime as these are expected to be the most optimized. Carbon internally avoids using Node compatibility interfaces where ever possible.
+
+Carbon offers the following API's
+
+
+
+| Feature         | Info                                    | Node   | Deno   | Bun   | Browser |
+| ---             | ---                                     | ---    | ---    | ---   | ---     |
+| Ansi            | Ansi Terminal Codes                     | Yes    | Yes    | Yes   | Yes     |
+| Assert          | Value Assertions                        | Yes    | Yes    | Yes   | Yes     |
+| Async           | Async Utils                             | Yes    | Yes    | Yes   | Yes     |
+| Benchmark       | Performance Measurements                | Yes    | Yes    | Yes   | Yes     |
+| Buffer          | Operations on Uint8Array Buffers        | Yes    | Yes    | Yes   | Yes     |
+| Channel         | Multi Sender Single Receiver Channels   | Yes    | Yes    | Yes   | Yes     |
+| Crypto          | Web Crypto API                          | Yes    | Yes    | Yes   | Yes     |
+| Dns             | Dns Lookup                              | Yes    | Yes    | Yes   | No      |
+| Encoding        | Json and Binary Buffer Encoding         | Yes    | Yes    | Yes   | Yes     |
+| Events          | Event Emitters                          | Yes    | Yes    | Yes   | Yes     |
+| Fs              | Isolated File System                    | Yes    | Yes    | Yes   | Yes     |
+| Http            | Http and WebSockets                     | Yes    | Yes    | Yes   | Partial |
+| Mime            | Mime Types                              | Yes    | Yes    | Yes   | Yes     |
+| Net             | Tcp Listeners and Sockets               | Yes    | Yes    | Yes   | No      |
+| Os              | Operating System Resolver               | Yes    | Yes    | Yes   | Yes     |
+| Path            | Pathing Utils (Windows and Posix)       | Yes    | Yes    | Yes   | Yes     |
+| Performance     | Web Performance API                     | Yes    | Yes    | Yes   | Yes     |
+| Process         | Standard IO and TTY                     | Yes    | Yes    | Yes   | Partial |
+| Qs              | Query String Parsing                    | Yes    | Yes    | Yes   | Yes     |
+| Runtime         | JavaScript Runtime Resolver             | Yes    | Yes    | Yes   | Yes     |
+| Stream          | Stream Interfaces                       | Yes    | Yes    | Yes   | Yes     |
+| Test            | Unit Testing                            | Yes    | Yes    | Yes   | Yes     |
+| Type            | Type System (TypeBox)                   | Yes    | Yes    | Yes   | Yes     |
+| Url             | Url Parsing                             | Yes    | Yes    | Yes   | Yes     |
+| Value           | Value Operations (TypeBox)              | Yes    | Yes    | Yes   | Yes     |
+| Worker          | Web Workers                             | Yes    | Yes    | Yes   | Yes     |
+
+## Http Server
+
+The following starts an Http listener
 
 ```typescript
 import { Http } from '@sinclair/carbon'
 
-Http.listen({ port: 5000 }, request => new Response('hello http'))
+const listener = await Http.listen({ port: 5000 }, request => {
 
-const text = await Http.fetch('http://localhost:5000').then(r => r.text())
-```
-
-## Overview
-
-Carbon is a platform abstraction layer built for Node, Deno, Bun and Browser environments. It implements a uniform Web Standard API on top of each platform to expose core network and storage capabilities as well as provides http and file system emulation support for Browsers. Carbon is written to allow web service applications to be developed uniformly across all major JavaScript server environments as well as to provide options to move some server out from centralized clouds and into a decentralized peer to peer Browser network.
-
-Carbon is built to serve as a foundation for developing portable server side applications capable of running across all major JavaScript environments. It is written to express core level functionality provided by each platform in a consistent way, as well as to provide some higher level communication functionality related to IPC and RPC.
-
-License MIT
-
-## Contents
-
-- [Overview](#Overview)
-- [Http](#Http)
-- [Fs](#Fs)
-- [Hub](#Hub)
-- [Contribute](#Contribute)
-
-
-## Http
-
-Carbon implements Web API for both Server and Client side of an Http connection.
-
-### Server
-
-The following creates an Http server that listens on port 5000. The callback must return a valid Response object.
-
-```typescript
-import { Http, Runtime } from '@sinclair/carbon'
-
-Http.listen({ port: 5000 }, (request, info) => {
-
-  return new Response(`hello from ${Runtime.name()}`)
+  return new Response('hello world')
 })
 ```
 
-### Fetch
+## WebSocket Server
 
-The following issues a fetch Request to the above server. When running the above server in Browser environments, the Http namespace supports the `webrtc://` protocol specifier that will establish the connection over a WebRTC transport.
-
-```typescript
-const response = await Http.fetch(`http://localhost:5000`)
-
-const text = await response.text()
-```
-
-## Fs
-
-Carbon Fs is a file system device that enables read and write access to some storage medium. Typically this medium will be a directory on disk, but may also be a IndexedDB database when running in Browser environments.
-
-### Open
-
-Carbon Fs requires a file system to be opened prior to use. Once opened, the file system will be treated as a isolated root meaning files can only be written to locations under that root. 
+The following upgrades an Http request into a WebSocket
 
 ```typescript
-import { Fs, Buffer } from '@sinclair/carbon'
+import { Http } from '@sinclair/carbon'
 
-// open the 'files' directory as a file system root
-const fs = await Fs.open('./files')
+const listener = await Http.listen({ port: 5000 }, request => {
 
-// write file
-await fs.write('/file.txt', Buffer.encode('hello'))
+  return Http.upgrade(request, socket => {
 
-// read file
-const content = Buffer.decode(await fs.read('/file.txt'))
+    socket.send('hello world')
+  })
+})
 ```
-
-### Hub
-
-Carbon supports localhost connections over WebRTC. The term localhost is used to describe connections made within a single browser instance. To support connecting browsers across the public internet, the browser must be connected to a public signalling service, what Carbon refers to as a Hub.
-
-### Service
-
-Carbon provides a built in signalling Hub. This is provided as a Rpc service type and can be hosted on a Rpc Host. This service needs to be accessible to the page, so would typically by run on a public internet host.
-
-```typescript
-import { Host, Hub } from '@sinclair/carbon'
-
-Host.listen({ port: 5010 }, { '/hub': new Hub.Service() })
-```
-
-### Remote
-
-The following connects to the above Hub running over localhost. When setting the Hub, Carbon will use it as the WebRTC signalling backend. Hubs provide additional information, such as the peers address on the network.
-
-```typescript
-import { Http, Hub } from '@sinclair/carbon'
-
-Hub.set(new Hub.Remote('ws://localhost:5010/hub'))
-
-const address = await Hub.get().address()
-```
-
-## Contribute
-
-Carbon is open to community contribution. However, please ensure to submit an issue before submitting a PR.

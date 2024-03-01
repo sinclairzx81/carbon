@@ -26,47 +26,43 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-import * as Guard from '../guard/index.mjs'
+import * as Value from '../value/index.mjs'
 
 export namespace ValueFormatter {
-  function formatTypedArray(value: Guard.TypedArrayType): string {
-    return Guard.isInt8Array(value)
-      ? `Int8Array { length: ${value.length} }`
-      : Guard.isUint8Array(value)
-      ? `Uint8Array { length: ${value.length} }`
-      : Guard.isUint8ClampedArray(value)
-      ? `Uint8ClampedArray { length: ${value.length} }`
-      : Guard.isInt16Array(value)
-      ? `Int16Array { length: ${value.length} }`
-      : Guard.isUint16Array(value)
-      ? `Uint16Array { length: ${value.length} }`
-      : Guard.isInt32Array(value)
-      ? `Int32Array { length: ${value.length} }`
-      : Guard.isUint32Array(value)
-      ? `Uint32Array { length: ${value.length} }`
-      : Guard.isFloat32Array(value)
-      ? `Float32Array { length: ${value.length} }`
-      : Guard.isFloat64Array(value)
-      ? `Float64Array { length: ${value.length} }`
-      : Guard.isBigInt64Array(value)
-      ? `BigInt64Array { length: ${value.length} }`
-      : Guard.isBigUint64Array(value)
-      ? `BigUint64Array { length: ${value.length} }`
-      : (() => {
-          throw new Error('Unknown typed array')
-        })()
+  function formatTypedArray(value: Value.TypedArrayType): string {
+    // prettier-ignore
+    return (
+      Value.IsInt8Array(value) ? `Int8Array { length: ${value.length} }` :
+      Value.IsUint8Array(value) ? `Uint8Array { length: ${value.length} }` : 
+      Value.IsUint8ClampedArray(value) ? `Uint8ClampedArray { length: ${value.length} }` : 
+      Value.IsInt16Array(value) ? `Int16Array { length: ${value.length} }` : 
+      Value.IsUint16Array(value) ? `Uint16Array { length: ${value.length} }` : 
+      Value.IsInt32Array(value) ? `Int32Array { length: ${value.length} }` : 
+      Value.IsUint32Array(value) ? `Uint32Array { length: ${value.length} }` : 
+      Value.IsFloat32Array(value) ? `Float32Array { length: ${value.length} }` : 
+      Value.IsFloat64Array(value) ? `Float64Array { length: ${value.length} }` : 
+      Value.IsBigInt64Array(value) ? `BigInt64Array { length: ${value.length} }` : 
+      Value.IsBigUint64Array(value) ? `BigUint64Array { length: ${value.length} }` : 
+      (() => { throw new Error('Unknown typed array') })()
+    )
   }
   function formatArray(value: unknown[]): string {
     const elements: string = value.map((value) => format(value)).join(', ')
     return `Array { length: ${value.length} } [${elements}]`
   }
-  function formatInstanceObject(value: Guard.ObjectType) {
+  function formatInstanceObject(value: Value.ObjectType) {
     return `${value.constructor.name}`
   }
-  function formatObject(value: Guard.ObjectType) {
+  function formatObject(value: Value.ObjectType) {
     return JSON.stringify(value)
   }
+  // prettier-ignore
   export function format(value: unknown): string {
-    return Guard.isTypedArray(value) ? formatTypedArray(value) : Guard.isArray(value) ? formatArray(value) : Guard.isInstanceObject(value) ? formatInstanceObject(value) : Guard.isObject(value) ? formatObject(value) : `${value}`
+    return (
+      Value.IsTypedArray(value) ? formatTypedArray(value) : 
+      Value.IsArray(value) ? formatArray(value) : 
+      Value.IsInstanceObject(value) ? formatInstanceObject(value) : 
+      Value.IsObject(value) ? formatObject(value) : `${value}`
+    )
   }
 }

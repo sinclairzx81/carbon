@@ -1,4 +1,4 @@
-import { Assert, Test } from '@sinclair/carbon'
+import { Assert, Test, Runtime } from '@sinclair/carbon'
 
 // ------------------------------------------------------------------
 // Fixtures
@@ -10,6 +10,8 @@ async function selectResponseProperty<T extends (response: Response) => unknown>
 // Test
 // ------------------------------------------------------------------
 Test.describe('Http:Response:Properties', () => {
+  Test.exclude(() => Runtime.isBrowser())
+
   // ----------------------------------------------------------------
   // arrayBuffer
   // ----------------------------------------------------------------

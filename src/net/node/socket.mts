@@ -67,7 +67,7 @@ export class Socket implements Stream.Read<Uint8Array>, Stream.Write<Uint8Array>
     }
   }
   public read(): Promise<Uint8Array | null> {
-    return this.#channel.next()
+    return this.#channel.receive()
   }
   // ----------------------------------------------------------------
   // Stream.Write<Uint8Array>

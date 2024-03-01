@@ -26,6 +26,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-export * from './websocket/index.mjs'
+export * from './websocket/server.mjs'
+export * from './websocket/client.mjs'
 export * from './http.mjs'
 export * from './listener.mjs'

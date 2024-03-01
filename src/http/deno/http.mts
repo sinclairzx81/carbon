@@ -39,8 +39,8 @@ export function fetch(input: URL | Request | string, init?: RequestInit): Promis
 // ------------------------------------------------------------------
 // Listen
 // ------------------------------------------------------------------
-export function listen(options: Core.ListenOptions, callback: Core.ListenCallback): Listener {
-  return new Listener(options, callback)
+export function listen(options: Core.ListenOptions, callback: Core.ListenCallback): Promise<Listener> {
+  return Promise.resolve(new Listener(options, callback))
 }
 // ------------------------------------------------------------------
 // Upgrade

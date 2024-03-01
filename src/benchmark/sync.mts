@@ -36,6 +36,7 @@ export interface BenchmarkOptions {
 export interface BenchmarkResult extends BenchmarkOptions {
   elapsed: number
 }
+/** Runs a function for the configured iterations and returns the elapsed result. */
 export function run(options: BenchmarkOptions, callback: BenchmarkSyncFunction): BenchmarkResult {
   const stopwatch = new Stopwatch()
   for (let i = 0; i < options.iterations; i++) {

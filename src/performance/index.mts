@@ -39,7 +39,7 @@ async function Resolve(): Promise<typeof import('./core/index.mjs')> {
     case 'node':
       return await import('./node/index.mjs')
     default:
-      throw Error('Process: Platform not supported')
+      throw new Runtime.RuntimeNotSupportedException('Performance')
   }
 }
 const Core = await Resolve()

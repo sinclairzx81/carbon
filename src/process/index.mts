@@ -43,14 +43,25 @@ async function Resolve(): Promise<typeof import('./core/index.mjs')> {
   }
 }
 const Core = await Resolve()
+/** Returns the arguments passed to this process */
 export const args = Core.args
+/** Returns true if read from the main thread */
 export const isMainThread = Core.isMainThread
+/** Returns the path to process entry module */
 export const mainModule = Core.mainModule
+/** Returns the current working directory */
 export const cwd = Core.cwd
+/** Returns environment variables accessible to this process */
 export const env = Core.env
+/** Terminates this process with the given exit code */
 export const exit = Core.exit
+/** Returns memory usage metric for this process */
 export const memoryUsage = Core.memoryUsage
+/** The standard error stream */
 export const stderr = Core.stderr
+/** The standard in stream */
 export const stdin = Core.stdin
+/** The standard out stream */
 export const stdout = Core.stdout
+/** The tty for this process if available */
 export const tty = Core.tty

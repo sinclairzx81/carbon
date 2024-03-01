@@ -33,10 +33,12 @@ import { Socket } from './socket.mjs'
 // ------------------------------------------------------------------
 // Listen
 // ------------------------------------------------------------------
-export function listen(options: Core.ListenOptions, callback: Core.ListenCallback): Core.Listener {
-  return new Listener(options, callback)
+export function listen(options: Core.ListenOptions, callback: Core.ListenCallback): Promise<Core.Listener> {
+  const required = { port: options.port, transport: 'tcp' } as const
+  const optional = options.hostname ? { hostname: options.hostname } : {}
+  const listener = Deno.listen({ ...required, ...optional })
+  return Promise.resolve(new Listener(listener, callback))
 }
-
 // ------------------------------------------------------------------
 // Connect
 // ------------------------------------------------------------------

@@ -28,6 +28,7 @@ THE SOFTWARE.
 
 import { TransformChannel } from './transform.mjs'
 
+/** An multi-sender, single receiver channel that supports sending and receiving values asynchronously */
 export class Channel<T = unknown> extends TransformChannel<T, T> {
   constructor() {
     super((value) => value)

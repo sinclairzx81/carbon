@@ -27,13 +27,19 @@ THE SOFTWARE.
 ---------------------------------------------------------------------------*/
 
 import * as Runtime from '../../runtime/runtime.mjs'
+
 const Crypto = await Runtime.dynamicImport<typeof import('node:crypto')>('node:crypto')
 const crypto = Crypto.webcrypto
 
-export function getRandomValues<T extends Int8Array | Int16Array | Int32Array | Uint8Array | Uint16Array | Uint32Array | Uint8ClampedArray | BigInt64Array | BigUint64Array>(array: T): T {
+export type RandomValueBufferType = Int8Array | Int16Array | Int32Array | Uint8Array | Uint16Array | Uint32Array | Uint8ClampedArray | BigInt64Array | BigUint64Array
+
+/** Generates random values for the given buffer */
+export function getRandomValues<T extends RandomValueBufferType>(array: T): T {
   return crypto.getRandomValues(array)
 }
+/** Returns a random UUID */
 export function randomUUID(): string {
   return crypto.randomUUID()
 }
+
 export const subtle = crypto.subtle as typeof global.crypto.subtle

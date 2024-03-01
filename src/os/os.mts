@@ -74,7 +74,7 @@ function resolveNode() {
   }
 }
 /** Returns the operating system type */
-export function name(): OsType {
+export function type(): OsType {
   switch (Runtime.name()) {
     case 'browser':
       return resolveBrowser()

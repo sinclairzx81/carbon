@@ -26,9 +26,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-export * from './frames/index.mjs'
-
+export * from './frame/index.mjs'
 export * from './close.mjs'
-export * from './iterator.mjs'
 export * from './read.mjs'
 export * from './write.mjs'

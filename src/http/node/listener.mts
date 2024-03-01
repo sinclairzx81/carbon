@@ -29,13 +29,14 @@ THE SOFTWARE.
 import * as Runtime from '../../runtime/index.mjs'
 const Ws = await Runtime.dynamicImport<typeof import('ws')>('ws')
 const Http = await Runtime.dynamicImport<typeof import('node:http')>('node:http')
+
 import type { Server as HttpServer, IncomingMessage as HttpIncomingMessage, ServerResponse as HttpServerResponse } from 'node:http'
 import type { WebSocketServer } from 'ws'
 import type { Duplex } from 'node:stream'
 
 import * as Core from '../core/index.mjs'
+import * as Config from '../../config/index.mjs'
 import * as Async from '../../async/index.mjs'
-import * as System from '../../system/index.mjs'
 import * as Dispose from '../../dispose/index.mjs'
 import { IncomingMessageToRequest } from './request.mjs'
 import { UpgradeMap } from './upgrade.mjs'
@@ -46,18 +47,29 @@ export class Listener implements Dispose.Dispose {
   readonly #server: HttpServer
   readonly #options: Core.ListenOptions
   readonly #callback: Core.ListenCallback
+  readonly #listening: Async.Deferred
   #closed: boolean
   constructor(options: Core.ListenOptions, callback: Core.ListenCallback) {
     this.#deferredClose = new Async.Deferred<void>()
     this.#options = options
     this.#callback = callback
+    this.#listening = new Async.Deferred()
     this.#wsserver = new Ws.WebSocketServer({ noServer: true })
     this.#server = new Http.Server()
+    this.#server.on('listening', () => this.#listening.resolve())
+    this.#server.on('error', (error) => this.#listening.reject(error))
     this.#server.on('request', (request, response) => this.#onRequest(request, response))
     this.#server.on('upgrade', (request, socket, head) => this.#onUpgrade(request, socket, head))
     this.#server.on('close', () => this.#onClose())
+
     this.#listen(options)
     this.#closed = false
+  }
+  // ----------------------------------------------------------------
+  // External
+  // ----------------------------------------------------------------
+  public get listening() {
+    return this.#listening.promise()
   }
   // ----------------------------------------------------------------
   // Dispose
@@ -115,7 +127,7 @@ export class Listener implements Dispose.Dispose {
   // Request
   // ----------------------------------------------------------------
   async #onClose() {
-    await Async.delay(System.listenerCloseDelay)
+    await Async.delay(Config.listenerCloseDelay)
     this.#deferredClose.resolve(void 0)
   }
   // ----------------------------------------------------------------
