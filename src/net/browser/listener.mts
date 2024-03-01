@@ -26,28 +26,14 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
+import * as Runtime from '../../runtime/index.mjs'
 import * as Dispose from '../../dispose/index.mjs'
-import * as WebRtc from '../../browser/webrtc/index.mjs'
-import * as Core from '../core/index.mjs'
-import { Socket } from './socket.mjs'
 
 export class Listener implements Dispose.Dispose {
-  readonly #listener: WebRtc.Listener
-  readonly #callback: Core.ListenCallback
-  constructor(options: Core.ListenOptions, callback: Core.ListenCallback) {
-    this.#callback = callback
-
-    this.#listener = WebRtc.listen({ port: options.port }, (peer, datachannel) => {
-      this.#onDataChannel(peer, datachannel)
-    })
+  public async [Symbol.asyncDispose]() {
+    throw new Runtime.RuntimeNotSupportedException('Net')
   }
-  public [Symbol.asyncDispose](): Promise<void> {
-    return this.dispose()
-  }
-  async dispose(): Promise<void> {
-    this.#listener.dispose()
-  }
-  #onDataChannel(peer: WebRtc.Peer, datachannel: RTCDataChannel) {
-    this.#callback(new Socket(peer, datachannel))
+  public async dispose() {
+    throw new Runtime.RuntimeNotSupportedException('Net')
   }
 }

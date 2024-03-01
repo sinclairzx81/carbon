@@ -30,6 +30,7 @@ export interface BarrierOptions {
   paused: boolean
 }
 
+/** An asynchronous barrier that can be paused and resumed */
 export class Barrier {
   readonly #resolvers: Array<() => void> = []
   #paused: boolean = true

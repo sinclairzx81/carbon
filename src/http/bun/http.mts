@@ -26,10 +26,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-import * as Async from '../../async/index.mjs'
 import * as Core from '../core/index.mjs'
-
-import { ServerWebSocket } from './websocket/index.mjs'
 import { Listener, UpgradeMap } from './listener.mjs'
 
 // ------------------------------------------------------------------
@@ -41,8 +38,8 @@ export function fetch(input: URL | Request | string, init?: RequestInit): Promis
 // ------------------------------------------------------------------
 // Listen
 // ------------------------------------------------------------------
-export function listen(options: Core.ListenOptions, callback: Core.ListenCallback): Listener {
-  return new Listener(options, callback)
+export function listen(options: Core.ListenOptions, callback: Core.ListenCallback): Promise<Listener> {
+  return Promise.resolve(new Listener(options, callback))
 }
 // ------------------------------------------------------------------
 // Upgrade

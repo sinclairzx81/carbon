@@ -39,6 +39,7 @@ export interface BenchmarkAsyncResult {
   concurrency: number
   elapsed: number
 }
+/** Runs an asynchronous function for the configured iterations and concurrency values and returns the elapsed result */
 export function runAsync(options: BenchmarkAsyncOptions, callback: BenchmarkAsyncFunction) {
   let index = 0
   return new Promise<BenchmarkAsyncResult>((resolve, reject) => {

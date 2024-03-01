@@ -26,12 +26,10 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-import * as Runtime from '../../runtime/index.mjs'
-const Net = await Runtime.dynamicImport<typeof import('node:net')>('node:net')
 import type { Server as NetServer, Socket as NetSocket } from 'node:net'
 
 import * as Core from '../core/index.mjs'
-import * as System from '../../system/index.mjs'
+import * as Config from '../../config/index.mjs'
 import * as Async from '../../async/index.mjs'
 import * as Dispose from '../../dispose/index.mjs'
 import { Socket } from './socket.mjs'
@@ -41,13 +39,13 @@ export class Listener implements Dispose.Dispose {
   readonly #server: NetServer
   readonly #callback: Core.ListenCallback
   #closed: boolean
-  constructor(options: Core.ListenOptions, callback: Core.ListenCallback) {
+
+  constructor(server: NetServer, callback: Core.ListenCallback) {
     this.#deferredClose = new Async.Deferred()
     this.#callback = callback
-    this.#server = new Net.Server()
+    this.#server = server
     this.#server.on('connection', (socket) => this.#onConnection(socket))
     this.#server.on('close', () => this.#onClose())
-    this.#server.listen(options.port)
     this.#closed = false
   }
   // ----------------------------------------------------------------
@@ -69,7 +67,7 @@ export class Listener implements Dispose.Dispose {
     this.#callback(new Socket(socket))
   }
   async #onClose() {
-    await Async.delay(System.listenerCloseDelay)
+    await Async.delay(Config.listenerCloseDelay)
     this.#deferredClose.resolve(void 0)
   }
 }

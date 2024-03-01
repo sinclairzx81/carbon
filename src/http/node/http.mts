@@ -41,8 +41,10 @@ export function fetch(input: URL | Request | string, init?: RequestInit): Promis
 // ------------------------------------------------------------------
 // Listen
 // ------------------------------------------------------------------
-export function listen(options: Core.ListenOptions, callback: Core.ListenCallback): Core.Listener {
-  return new Listener(options, callback)
+export async function listen(options: Core.ListenOptions, callback: Core.ListenCallback): Promise<Core.Listener> {
+  const listener = new Listener(options, callback)
+  await listener.listening
+  return listener
 }
 // ------------------------------------------------------------------
 // Connect

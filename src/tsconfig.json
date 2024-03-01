@@ -1,5 +1,8 @@
 {
   "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "typeRoots": ["./types"]
+  },
   "files": [
     // Ansi
     "ansi/index.mts",
@@ -9,8 +12,6 @@
     "async/index.mts",
     // Benchmark
     "benchmark/index.mts",
-    // Browser
-    "browser/index.mts",
     // Buffer
     "buffer/index.mts",
     // Channel
@@ -22,6 +23,7 @@
     "crypto/node/index.mts",
     "crypto/index.mts",
     // Dns
+    "dns/browser/index.mts",
     "dns/core/index.mts",
     "dns/bun/index.mts",
     "dns/deno/index.mts",
@@ -29,11 +31,10 @@
     "dns/index.mts",
     // Dispose
     "dispose/index.mts",
-    // Encoding
-    "encoding/index.mts",
     // Events
     "events/index.mts",
     // Fs
+    "fs/browser/index.mts",
     "fs/core/index.mts",
     "fs/bun/index.mts",
     "fs/deno/index.mts",
@@ -46,8 +47,6 @@
     "http/deno/index.mts",
     "http/node/index.mts",
     "http/index.mts",
-    // Hub
-    "hub/index.mts",
     // Mime
     "mime/index.mts",
     // Net
@@ -55,6 +54,7 @@
     "net/core/index.mts",
     "net/deno/index.mts",
     "net/node/index.mts",
+    "net/index.mts",
     // Os
     "os/index.mts",
     // Path
@@ -76,16 +76,15 @@
     "process/index.mts",
     // Qs
     "qs/index.mts",
-    // Rpc
-    "rpc/client/index.mts",
-    "rpc/contract/index.mts",
-    "rpc/service/index.mts",
     // Runtime
     "runtime/index.mts",
     // Stream
     "stream/index.mts",
     // Test
     "test/index.mts",
+    // Type
+    "type/index.mts",
+    "type/compiler/index.mts",
     // Url
     "url/index.mts",
     // Value

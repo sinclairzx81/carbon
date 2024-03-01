@@ -39,9 +39,10 @@ async function Resolve(): Promise<typeof import('./core/index.mjs')> {
     case 'node':
       return await import('./node/index.mjs')
     default:
-      throw new Runtime.RuntimeNotSupportedException('Dns: Runtime not supported')
+      throw new Runtime.RuntimeNotSupportedException('Dns')
   }
 }
 
 const Core = await Resolve()
+/** Performs a Dns lookup query */
 export const lookup = Core.lookup

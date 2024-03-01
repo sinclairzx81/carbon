@@ -28,6 +28,7 @@ THE SOFTWARE.
 
 import * as Performance from '../performance/index.mjs'
 
+/** A stopwatch to measure the elapsed time from the last reset */
 export class Stopwatch {
   #started: number
   constructor() {

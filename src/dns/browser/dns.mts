@@ -29,6 +29,6 @@ THE SOFTWARE.
 import * as Runtime from '../../runtime/index.mjs'
 import * as Core from '../core/index.mjs'
 
-export function lookup(hostname: string, options: Core.LookupOptions = { family: 'Any' }): Promise<Core.LookupResult[]> {
-  throw new Runtime.RuntimeNotSupportedException('Dns')
+export async function lookup(hostname: string, options: Core.LookupOptions = { family: 'Any' }): Promise<Core.LookupResult[]> {
+  throw new Runtime.RuntimeNotSupportedException('Dns.lookup')
 }

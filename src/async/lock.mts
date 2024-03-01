@@ -26,6 +26,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
+/** A lock to some resource */
 export class Lock {
   #resolve: Function
   constructor(resolve: Function) {

@@ -1,0 +1,111 @@
+name: Nightly
+on:
+  schedule:
+    - cron: '0 18 * * *' # 6pm Daily
+jobs:
+  # -----------------------------------------------------------
+  # Browser
+  # -----------------------------------------------------------
+  Browser:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 2
+    strategy:
+      matrix:
+        node: [20.x]
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: browser-actions/setup-chrome@latest
+        with:
+          chrome-version: latest
+
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install Packages
+        run: npm install
+
+      - name: Test Library
+        run: npm run test:browser
+  # -----------------------------------------------------------
+  # Bun 
+  # -----------------------------------------------------------
+  Bun:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 2
+    strategy:
+      matrix:
+        node: [20.x]
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install Packages
+        run: npm install
+
+      - name: Test Library
+        run: npm run test:bun
+  # -----------------------------------------------------------
+  # Deno 
+  # -----------------------------------------------------------
+  Deno:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 2
+    strategy:
+      matrix:
+        node: [20.x]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: canary
+
+      - name: Install Packages
+        run: npm install
+
+      - name: Test Library
+        run: npm run test:deno
+  # -----------------------------------------------------------
+  # Node 
+  # -----------------------------------------------------------
+  Node:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 2
+    strategy:
+      matrix:
+        node: [20.x]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install Packages
+        run: npm install
+
+      - name: Test Library
+        run: npm run test:node

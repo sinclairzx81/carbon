@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-import * as IndexedDb from '../../browser/indexeddb/index.mjs'
+import * as IndexedDb from './indexeddb/index.mjs'
 import { FileSystem } from './filesystem.mjs'
 
 export async function remove(path: string): Promise<void> {

@@ -43,7 +43,7 @@ export interface RequestInfo {
 export type ListenCallback = (request: Request, info: RequestInfo) => Response | Promise<Response>
 
 export declare class Listener implements Dispose.Dispose {
-  constructor(options: ListenOptions, callback: ListenCallback)
+  constructor(...args: never[])
   [Symbol.asyncDispose](): Promise<void>
   dispose(): Promise<void>
 }
