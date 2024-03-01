@@ -2,17 +2,18 @@ import { Http, Assert, Test, Runtime } from '@sinclair/carbon'
 
 async function resolveRequestObject<T>(path: string, method: string, body: string | null, callback: (request: Request) => T): Promise<T> {
   let value!: T
-  const listener = Http.listen({ port: 5000 }, async (request) => {
+  const listener = await Http.listen({ port: 5000 }, async (request) => {
     value = await callback(request)
     return new Response('OK')
   })
-  const protocol = Runtime.isBrowser() ? 'webrtc' : 'http'
   const headers = { foo: 'bar' }
-  await Http.fetch(`${protocol}://localhost:5000${path}`, { method, body, headers }).then((r) => r.text())
+  await Http.fetch(`http://localhost:5000${path}`, { method, body, headers }).then((r) => r.text())
   await listener.dispose()
   return value
 }
 Test.describe('Http:Request:Properties', () => {
+  Test.exclude(() => Runtime.isBrowser())
+
   let cloneRequest!: Request
   let getRequest!: Request
   let postRequest!: Request

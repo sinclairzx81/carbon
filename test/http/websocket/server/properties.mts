@@ -1,8 +1,8 @@
 import { Test, Assert, Http, Runtime } from '@sinclair/carbon'
 
-export function resolveSocket<T extends (socket: Http.ServerWebSocket) => unknown>(callback: T): Promise<ReturnType<T>> {
+export async function resolveSocket<T extends (socket: Http.ServerWebSocket) => unknown>(callback: T): Promise<ReturnType<T>> {
   let property: any = null
-  const listener = Http.listen({ port: 5000 }, (request) => {
+  const listener = await Http.listen({ port: 5000 }, (request) => {
     return Http.upgrade(request, (socket) => {
       property = callback(socket)
       socket.close()
@@ -19,6 +19,8 @@ export function resolveSocket<T extends (socket: Http.ServerWebSocket) => unknow
   })
 }
 Test.describe('Http:ServerWebSocket:Properties', () => {
+  Test.exclude(() => Runtime.isBrowser())
+
   let socket: Http.ServerWebSocket
   Test.before(async () => {
     socket = await resolveSocket((socket) => socket)

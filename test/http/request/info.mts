@@ -10,12 +10,11 @@ const nextMessage = (function () {
 async function selectRequestProperty<T extends (info: Http.RequestInfo) => unknown>(callback: T): Promise<ReturnType<T>> {
   let property: any = null
   let message = nextMessage()
-  const listener = Http.listen({ port: 5000 }, async (request, info) => {
+  const listener = await Http.listen({ port: 5000 }, async (request, info) => {
     property = await callback(info)
     return new Response(message)
   })
-  const protocol = Runtime.isBrowser() ? 'webrtc' : 'http'
-  const response = await Http.fetch(`${protocol}://localhost:5000`)
+  const response = await Http.fetch(`http://localhost:5000`)
   const text = await response.text()
   await listener.dispose()
   Assert.isEqual(text, message)
@@ -25,6 +24,8 @@ async function selectRequestProperty<T extends (info: Http.RequestInfo) => unkno
 // Test
 // ------------------------------------------------------------------
 Test.describe('Http:Request:RequestInfo', () => {
+  Test.exclude(() => Runtime.isBrowser())
+
   // ----------------------------------------------------------------
   // local.address
   // ----------------------------------------------------------------

@@ -18,7 +18,7 @@ async function readAll(readable: ReadableStream<Uint8Array>) {
 }
 async function send(inputs: Uint8Array[]): Promise<Uint8Array[]> {
   const outputs = range(inputs.length).map(() => Buffer.alloc(0))
-  const listener = Http.listen({ port: 5000 }, async (request) => {
+  const listener = await Http.listen({ port: 5000 }, async (request) => {
     const index = parseInt(request.headers.get('index')!)
     outputs[index] = await readAll(request.body!)
     return new Response('ok')
@@ -43,6 +43,8 @@ async function send(inputs: Uint8Array[]): Promise<Uint8Array[]> {
 // Test
 // ------------------------------------------------------------------
 Test.describe('Http:Request:Readable', () => {
+  Test.exclude(() => Runtime.isBrowser())
+
   Test.it('Should receive parallel x1 buffer 256kb', async () => {
     const inputs = range(1).map(() => Buffer.random(256_000))
     const outputs = await send(inputs)

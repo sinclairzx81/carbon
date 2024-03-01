@@ -1,10 +1,6 @@
-# Carbon
+# Carbon Development Setup
 
-Unified Network and Microservice Framework For JavaScript
-
-## Setup
-
-Carbon was primarily developed on Ubuntu 22.04.2 LTS running on WSL2, although any Linux distribution should be fine. Carbon is configured for various npm tasks can execute example code across each platform. It also has testing infrastructure to test each platform locally. Before running any of these, you will need to install each platforms.
+Carbon was developed on Ubuntu 22.04.2 LTS running on WSL2, however any Linux distribution should be fine. This projects package.json is configured to run the various example scripts across each runtime which is how new functionality is tested interactively. It is also configured to run unit tests across each runtime. Before running any of these, you will need to install the following.
 
 ## Chrome
 

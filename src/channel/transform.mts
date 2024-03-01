@@ -51,6 +51,7 @@ export type Message<T> = MessageNext<T> | MessageError | MessageEnd
 
 export type TransformFunction<T, U> = (value: T) => U | Promise<U>
 
+/** An multi-sender, single receiver transform channel that supports sending and receiving values asynchronously */
 export class TransformChannel<T = unknown, U = unknown> implements Sender<T>, Receiver<U> {
   readonly #transformFunction: TransformFunction<T, U>
   readonly #queue: Queue<Message<T>>
@@ -72,13 +73,13 @@ export class TransformChannel<T = unknown, U = unknown> implements Sender<T>, Re
   // ----------------------------------------------------------------
   public async *[Symbol.asyncIterator]() {
     while (true) {
-      const next = await this.next()
+      const next = await this.receive()
       if (next === null) return
       yield next
     }
   }
   /** Returns the next value from this channel or null if EOF. */
-  public async next(): Promise<U | null> {
+  public async receive(): Promise<U | null> {
     if (this.#ended && this.#queue.buffered === 0) return null
     const message = await this.#queue.dequeue()
     switch (message.type) {

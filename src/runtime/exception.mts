@@ -26,8 +26,9 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
+/** Exception raised on runtime not supported functionality */
 export class RuntimeNotSupportedException extends Error {
-  constructor(message: string = 'Runtime not supported') {
-    super(message)
+  constructor(context: string = 'Runtime not supported') {
+    super(`${context} is not supported on this runtime`)
   }
 }

@@ -26,16 +26,16 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-import * as net from 'node:net'
+import * as Net from 'node:net'
 import * as Channel from '../../channel/index.mjs'
 import * as Core from '../core/index.mjs'
 import * as Stream from '../../stream/index.mjs'
 
 export class Socket implements Stream.Read<Uint8Array>, Stream.Write<Uint8Array> {
   readonly #channel: Channel.Channel<Uint8Array>
-  readonly #socket: net.Socket
+  readonly #socket: Net.Socket
   #closed: boolean
-  constructor(socket: net.Socket) {
+  constructor(socket: Net.Socket) {
     this.#channel = new Channel.Channel<Uint8Array>()
     this.#socket = socket
     this.#socket.on('data', (data) => this.#onData(data))
@@ -67,12 +67,13 @@ export class Socket implements Stream.Read<Uint8Array>, Stream.Write<Uint8Array>
     }
   }
   public read(): Promise<Uint8Array | null> {
-    return this.#channel.next()
+    return this.#channel.receive()
   }
   // ----------------------------------------------------------------
   // Stream.Write<Uint8Array>
   // ----------------------------------------------------------------
   public write(value: Uint8Array): Promise<void> {
+    this.#assertNotClosed()
     return new Promise((resolve, reject) => {
       this.#socket.write(value, (error) => {
         return error ? reject(error) : resolve()

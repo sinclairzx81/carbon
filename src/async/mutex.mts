@@ -29,6 +29,7 @@ THE SOFTWARE.
 import { Deferred } from './deferred.mjs'
 import { Lock } from './lock.mjs'
 
+/** A mutual exclusion type that supports asynchronous lock acquisition for critical sections */
 export class Mutex {
   #queue: Array<Deferred<Lock>>
   #running: boolean

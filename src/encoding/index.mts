@@ -26,6 +26,5 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-export * from './json/index.mjs'
-export * from './msgpack/index.mjs'
-export * from './encoding.mjs'
+export * as Json from './json.mjs'
+export * as MsgPack from './msgpack.mjs'

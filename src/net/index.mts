@@ -39,11 +39,13 @@ async function Resolve(): Promise<typeof import('./core/index.mjs')> {
     case 'node':
       return await import('./node/index.mjs')
     default:
-      throw Error('Net: Platform not supported')
+      throw new Runtime.RuntimeNotSupportedException('Net')
   }
 }
 const Core = await Resolve()
 export class Listener extends Core.Listener {}
 export class Socket extends Core.Socket {}
+/** Creates a listener with the given options */
 export const listen = Core.listen
+/** Connects to remote listener */
 export const connect = Core.connect

@@ -32,6 +32,7 @@ import { Lock } from './lock.mjs'
 export interface SemaphoreOptions {
   concurrency: number
 }
+/** An asynchronous semaphore that limits access to a resource within a configurable concurrency threshold */
 export class Semaphore {
   #queue: Array<Deferred<Lock>>
   #concurrency: number

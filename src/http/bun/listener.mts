@@ -30,7 +30,7 @@ import type { Server as BunServer, ServerWebSocket as BunServerWebSocket } from 
 
 import * as Async from '../../async/index.mjs'
 import * as Dispose from '../../dispose/index.mjs'
-import * as System from '../../system/index.mjs'
+import * as Config from '../../config/index.mjs'
 import * as Core from '../core/index.mjs'
 import { ServerWebSocket } from './index.mjs'
 
@@ -66,7 +66,7 @@ export class Listener implements Dispose.Dispose {
   }
   public async dispose(): Promise<void> {
     this.#server.stop(true)
-    await Async.delay(System.listenerCloseDelay)
+    await Async.delay(Config.listenerCloseDelay)
   }
   // ----------------------------------------------------------------
   // Fetch
@@ -92,10 +92,10 @@ export class Listener implements Dispose.Dispose {
     if (UpgradeMap.has(request)) {
       const callback = UpgradeMap.get(request)!
       const barrier = new Async.Barrier({ paused: true })
-      const socket = new ServerWebSocket(barrier)
+      const socket = new ServerWebSocket(barrier) // send barrier to socket to wait for open
       const upgradeOk = server.upgrade(request, { data: socket })
       if (!upgradeOk) return new Response('Request failed to upgrade', { status: 500 })
-      await barrier.wait() // waiting for server socket open event
+      await barrier.wait() // waiting on socket to open
       callback(socket)
       return undefined
     } else {

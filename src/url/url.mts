@@ -41,7 +41,7 @@ import * as Os from '../os/index.mjs'
 // ----------------------------------------------------------------
 // Constants
 // ----------------------------------------------------------------
-const isWindows = Os.name() === 'win32'
+const isWindows = Os.type() === 'win32'
 
 const forwardSlashRegEx = /\//g
 const percentRegEx = /%/g
@@ -116,7 +116,7 @@ export function fileUrlToPath(path: string | URL): string {
   if (path.protocol !== 'file:') {
     throw new Error(`Invalid protocol ${path.protocol}`)
   }
-  return Os.name() === 'win32' ? getPathFromURLWin(path) : getPathFromURLPosix(path)
+  return Os.type() === 'win32' ? getPathFromURLWin(path) : getPathFromURLPosix(path)
 }
 
 // ----------------------------------------------------------------

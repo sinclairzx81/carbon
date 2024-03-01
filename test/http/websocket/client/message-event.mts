@@ -1,16 +1,15 @@
 import { Test, Assert, Http, Buffer, Runtime } from '@sinclair/carbon'
 
 // prettier-ignore
-export function resolveMessageEvent<T extends (event: MessageEvent) => unknown>(callback: T, data: any = 'hello'): Promise<ReturnType<T>> {
+export async function resolveMessageEvent<T extends (event: MessageEvent) => unknown>(callback: T, data: any = 'hello'): Promise<ReturnType<T>> {
   let property: any = null
-  const listener = Http.listen({ port: 5000 }, (request) => {
+  const listener = await Http.listen({ port: 5000 }, (request) => {
     return Http.upgrade(request, (socket) => {
       socket.send(data)
       socket.close()
     })
   })
-  const protocol = Runtime.isBrowser() ? 'webrtc' : 'ws'
-  const socket = new Http.WebSocket(`${protocol}://localhost:5000`)
+  const socket = new Http.WebSocket(`ws://localhost:5000`)
   return new Promise((resolve, reject) => {
     socket.on('message', (message) => {
       property = callback(message)
@@ -23,6 +22,8 @@ export function resolveMessageEvent<T extends (event: MessageEvent) => unknown>(
   })
 }
 Test.describe('Http:WebSocket:MessageEvent:Properties', () => {
+  Test.exclude(() => Runtime.isBrowser())
+
   let event: MessageEvent<any>
   Test.before(async () => {
     event = await resolveMessageEvent((event) => event)

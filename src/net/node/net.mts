@@ -31,13 +31,18 @@ import * as Core from '../core/index.mjs'
 import { Listener } from './listener.mjs'
 import { Socket } from './socket.mjs'
 
-const net = await Runtime.dynamicImport<typeof import('node:net')>('node:net')
+const Net = await Runtime.dynamicImport<typeof import('node:net')>('node:net')
 
 // ------------------------------------------------------------------
 // Listen
 // ------------------------------------------------------------------
-export function listen(options: Core.ListenOptions, callback: Core.ListenCallback): Core.Listener {
-  return new Listener(options, callback)
+export function listen(options: Core.ListenOptions, callback: Core.ListenCallback): Promise<Core.Listener> {
+  return new Promise((resolve, reject) => {
+    const server = new Net.Server()
+    server.on('listening', () => resolve(new Listener(server, callback)))
+    server.on('error', (error) => reject(error))
+    server.listen(options.port, options.hostname)
+  })
 }
 
 // ------------------------------------------------------------------
@@ -45,10 +50,7 @@ export function listen(options: Core.ListenOptions, callback: Core.ListenCallbac
 // ------------------------------------------------------------------
 export function connect(options: Core.ConnectOptions): Promise<Core.Socket> {
   return new Promise((resolve, reject) => {
-    // prettier-ignore
-    const socket = options.hostname 
-      ? net.connect(options.port, options.hostname) 
-      : net.connect(options.port)
+    const socket = Net.connect(options.port, options.hostname)
     socket.once('connect', () => resolve(new Socket(socket)))
     socket.once('error', (error) => reject(error))
     socket.once('end', () => reject(new Error('TcpSocket: socket unexpectedly closed')))

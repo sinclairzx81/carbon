@@ -4,9 +4,8 @@ import { Http, Test, Assert, Runtime } from '@sinclair/carbon'
 // Fixtures
 // ------------------------------------------------------------------
 async function echo(inputs: any[]): Promise<any[]> {
-  const listener = Http.listen({ port: 5000 }, async (request) => new Response(request.body))
-  const protocol = Runtime.isBrowser() ? 'webrtc' : 'http'
-  const [endpoint, method, headers] = [`${protocol}://localhost:5000/`, 'post', { 'Content-Type': 'application/json' }]
+  const listener = await Http.listen({ port: 5000 }, async (request) => new Response(request.body))
+  const [endpoint, method, headers] = [`http://localhost:5000/`, 'post', { 'Content-Type': 'application/json' }]
   const buffers = await Promise.all(inputs.map((input) => JSON.stringify(input)).map((body) => Http.fetch(endpoint, { headers, method, body }).then((res) => res.json())))
   await listener.dispose()
   return buffers
@@ -15,6 +14,8 @@ async function echo(inputs: any[]): Promise<any[]> {
 // Test
 // ------------------------------------------------------------------
 Test.describe('Http:Response:Json', () => {
+  Test.exclude(() => Runtime.isBrowser())
+
   Test.it('Should send receive parallel x1', async () => {
     const inputs = [{ x: 1 }]
     const outputs = await echo(inputs)

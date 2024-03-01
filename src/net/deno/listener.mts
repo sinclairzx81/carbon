@@ -27,7 +27,7 @@ THE SOFTWARE.
 ---------------------------------------------------------------------------*/
 
 import * as Core from '../core/index.mjs'
-import * as System from '../../system/index.mjs'
+import * as Config from '../../config/index.mjs'
 import * as Async from '../../async/index.mjs'
 import * as Dispose from '../../dispose/index.mjs'
 import { Socket } from './socket.mjs'
@@ -36,9 +36,9 @@ export class Listener implements Dispose.Dispose {
   readonly #listener: Deno.Listener
   readonly #callback: Core.ListenCallback
   #closed: boolean
-  constructor(options: Core.ListenOptions, callback: Core.ListenCallback) {
+  constructor(listener: Deno.Listener, callback: Core.ListenCallback) {
+    this.#listener = listener
     this.#callback = callback
-    this.#listener = Deno.listen({ port: options.port, transport: 'tcp' })
     this.#closed = false
     this.#readInternal().catch((error) => console.log(error))
   }
@@ -52,7 +52,7 @@ export class Listener implements Dispose.Dispose {
     if (this.#closed) return
     this.#closed = true
     this.#listener.close()
-    await Async.delay(System.listenerCloseDelay)
+    await Async.delay(Config.listenerCloseDelay)
   }
   async #readInternal() {
     for await (const socket of this.#listener) {

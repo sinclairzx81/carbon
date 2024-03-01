@@ -27,5 +27,5 @@ THE SOFTWARE.
 ---------------------------------------------------------------------------*/
 
 export * from './listener.mjs'
-export * from './socket.mjs'
 export * from './net.mjs'
+export * from './socket.mjs'

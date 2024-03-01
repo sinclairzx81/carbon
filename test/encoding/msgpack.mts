@@ -1,7 +1,7 @@
 import { Encoding, Assert, Test } from '@sinclair/carbon'
 
 Test.describe('Encoding:MsgPack', () => {
-  const encoding = new Encoding.MsgPackEncoding()
+  const encoding = Encoding.MsgPack
   Test.it('Should encode and decode string', () => {
     const value = 'hello'
     const encoded = encoding.encode(value)

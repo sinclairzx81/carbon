@@ -1,4 +1,4 @@
-import { Test, Net, Assert, Buffer } from '@sinclair/carbon'
+import { Test, Net, Assert, Buffer, Runtime } from '@sinclair/carbon'
 
 // --------------------------------------------------------------------------
 // Fixtures
@@ -26,34 +26,36 @@ async function assertedFetch() {
 // Test
 // --------------------------------------------------------------------------
 Test.describe('Net:Listener', () => {
+  Test.exclude(() => Runtime.isBrowser())
+
   Test.it('Should listen then close', async () => {
-    const listener = createListener()
+    const listener = await createListener()
     await listener.dispose()
   })
   Test.it('Should listen then close x 16', async () => {
     for (let i = 0; i < 16; i++) {
-      const listener = createListener()
+      const listener = await createListener()
       await listener.dispose()
     }
   })
   Test.it('Should listen fetch then close', async () => {
-    const listener = createListener()
+    const listener = await createListener()
     await assertedFetch()
     await listener.dispose()
   })
   Test.it('Should listen fetch then close (sequential x 32)', async () => {
-    const listener = createListener()
+    const listener = await createListener()
     for (let i = 0; i < 32; i++) await assertedFetch()
     await listener.dispose()
   })
   Test.it('Should listen fetch then close (parallel x 32)', async () => {
-    const listener = createListener()
+    const listener = await createListener()
     const tasks = Array.from({ length: 32 }).map((_, i) => assertedFetch())
     await Promise.all(tasks)
     await listener.dispose()
   })
   Test.it('Should listen fetch then close (parallel x 64)', async () => {
-    const listener = createListener()
+    const listener = await createListener()
     const tasks = Array.from({ length: 64 }).map((_, i) => assertedFetch())
     await Promise.all(tasks)
     await listener.dispose()

@@ -33,11 +33,10 @@ import { Socket, ConnectOptions } from './socket.mjs'
 // Listen
 // ------------------------------------------------------------------
 /** Returns a net listener for the given options */
-export declare function listen(options: ListenOptions, callback: ListenCallback): Listener
+export declare function listen(options: ListenOptions, callback: ListenCallback): Promise<Listener>
 
 // ------------------------------------------------------------------
 // Connect
 // ------------------------------------------------------------------
-
 /** Connects to a remote listener and awaits a Socket if successful */
 export declare function connect(options: ConnectOptions): Promise<Socket>

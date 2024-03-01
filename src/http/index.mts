@@ -39,15 +39,19 @@ async function Resolve(): Promise<typeof import('./core/index.mjs')> {
     case 'node':
       return await import('./node/index.mjs')
     default:
-      throw new Runtime.RuntimeNotSupportedException('Http: Runtime not supported')
+      throw new Runtime.RuntimeNotSupportedException('Http')
   }
 }
+
 const Core = await Resolve()
 export class ServerWebSocket extends Core.ServerWebSocket {}
 export class WebSocket extends Core.WebSocket {}
 export class Listener extends Core.Listener {}
+/** Creates an listener with the given options */
 export const listen = Core.listen
+/** Issues an http fetch. */
 export const fetch = Core.fetch
+/** Upgrades an http request object into a WebSocket */
 export const upgrade = Core.upgrade
 
 export type { ListenCallback, ListenOptions, RequestInfo } from './core/index.mjs'

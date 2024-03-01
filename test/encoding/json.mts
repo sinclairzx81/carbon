@@ -1,7 +1,7 @@
 import { Encoding, Assert, Test } from '@sinclair/carbon'
 
 Test.describe('Encoding:JsonEncoding', () => {
-  const encoding = new Encoding.JsonEncoding()
+  const encoding = Encoding.Json
   Test.it('Should encode and decode string', () => {
     const value = 'hello'
     const encoded = encoding.encode(value)

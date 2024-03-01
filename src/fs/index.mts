@@ -39,12 +39,15 @@ async function Resolve(): Promise<typeof import('./core/index.mjs')> {
     case 'node':
       return await import('./node/index.mjs')
     default:
-      throw new Runtime.RuntimeNotSupportedException('Fs: Runtime not supported')
+      throw new Runtime.RuntimeNotSupportedException('Fs')
   }
 }
 const Core = await Resolve()
 
 export { Stat, DirectoryStat, FileStat } from './core/index.mjs'
 export class FileSystem extends Core.FileSystem {}
+
+/** Opens a directory or indexeddb database as a file system root */
 export const open = Core.open
+/** Removes a directory or indexeddb database acting as a file system root */
 export const remove = Core.remove

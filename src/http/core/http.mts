@@ -29,24 +29,21 @@ THE SOFTWARE.
 import { Listener, ListenOptions, ListenCallback, ServerWebSocket } from './index.mjs'
 
 // ------------------------------------------------------------------
-// Fetch
-// ------------------------------------------------------------------
-
-/** Fetch a resource from the network. It returns a Promise that resolves to the Response to that Request, whether it is successful or not. */
-export declare function fetch(input: URL | Request | string, init?: RequestInit): Promise<Response>
-
-// ------------------------------------------------------------------
 // Listen
 // ------------------------------------------------------------------
-
-/** Creates a Http Listener */
-export declare function listen(options: ListenOptions, callback: ListenCallback): Listener
+/** Creates an Http Listener */
+export declare function listen(options: ListenOptions, callback: ListenCallback): Promise<Listener>
 
 // ------------------------------------------------------------------
 // Upgrade
 // ------------------------------------------------------------------
-
 export type UpgradeCallback = (socket: ServerWebSocket) => any
 
 /** Upgrades a Request into a WebSocket */
 export declare function upgrade(request: Request, callback: UpgradeCallback): Promise<Response>
+
+// ------------------------------------------------------------------
+// Fetch
+// ------------------------------------------------------------------
+/** Fetch a resource from the network. It returns a Promise that resolves to the Response to that Request, whether it is successful or not. */
+export declare function fetch(input: URL | Request | string, init?: RequestInit): Promise<Response>

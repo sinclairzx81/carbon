@@ -26,144 +26,27 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-import * as WebRtc from '../../browser/webrtc/index.mjs'
-import * as Buffer from '../../buffer/index.mjs'
-import * as Channel from '../../channel/index.mjs'
-import * as Async from '../../async/index.mjs'
-import * as Stream from '../../stream/index.mjs'
+import * as Runtime from '../../runtime/index.mjs'
 import * as Core from '../core/index.mjs'
+import * as Stream from '../../stream/index.mjs'
 
-// prettier-ignore
 export class Socket implements Stream.Read<Uint8Array>, Stream.Write<Uint8Array> {
-  readonly #peer: WebRtc.Peer
-  readonly #datachannel: RTCDataChannel
-  readonly #readchannel: Channel.Channel<Uint8Array>
-  readonly #mutex: Async.Mutex
-  constructor(peer: WebRtc.Peer, datachannel: RTCDataChannel) {
-    this.#peer = peer
-    this.#mutex = new Async.Mutex()
-    this.#readchannel = new Channel.Channel<Uint8Array>()
-    this.#datachannel = datachannel
-    this.#datachannel.addEventListener('message', (event) => this.#onMessage(event))
-    this.#datachannel.addEventListener('close', (event) => this.#onClose(event))
-    this.#datachannel.addEventListener('error', (event) => this.#onError(event))
-  }
-  // ----------------------------------------------------------------
-  // Properties
-  // ----------------------------------------------------------------
   public get local(): Core.Address {
-    return { address: this.#resolveAddress(this.#peer.localAddress), port: 0 }
+    throw new Runtime.RuntimeNotSupportedException('Net')
   }
   public get remote(): Core.Address {
-    return { address: this.#resolveAddress(this.#peer.remoteAddress), port: 0 }
+    throw new Runtime.RuntimeNotSupportedException('Net')
   }
-  // ----------------------------------------------------------------
-  // Stream.Read<Uint8Array>
-  // ----------------------------------------------------------------
   public async *[Symbol.asyncIterator](): AsyncIterableIterator<Uint8Array> {
-    while (true) {
-      const next = await this.read()
-      if (next === null) return
-      yield next
-    }
+    throw new Runtime.RuntimeNotSupportedException('Net')
   }
   public read(): Promise<Uint8Array | null> {
-    return this.#readchannel.next()
+    throw new Runtime.RuntimeNotSupportedException('Net')
   }
-  // ----------------------------------------------------------------
-  // Stream.Write<Uint8Array>
-  // ----------------------------------------------------------------
-  public async write(value: Uint8Array): Promise<void> {
-    await this.#writeInternal(value)
+  public write(value: Uint8Array): Promise<void> {
+    throw new Runtime.RuntimeNotSupportedException('Net')
   }
-  public async close(): Promise<void> {
-    await this.#closeInternal()
-  }
-  // ----------------------------------------------------------------
-  // Read Events
-  // ----------------------------------------------------------------
-  #onError(event: Event) {
-    this.#readchannel.error(event as any)
-  }
-  #onMessage(event: MessageEvent) {
-    this.#readchannel.send(new Uint8Array(event.data))
-  }
-  #onClose(event: Event) {
-    this.#readchannel.end()
-  }
-  // ----------------------------------------------------------------
-  // Congestion
-  // ----------------------------------------------------------------
-  #connectionBufferedAmount() {
-    let size = 0
-    for(const datachannel of this.#peer.datachannels) size += datachannel.bufferedAmount
-    return size
-  }
-  #maximumBufferedAmount() {
-    return 65535 // estimated 64k
-  }
-  #sendMessageSize() {
-    const channelCount = this.#peer.datachannels.size === 0 ? 1 : this.#peer.datachannels.size
-    return Math.floor(32768 / channelCount)
-  }
-  #isUnderMinimumThreshold() {
-    const maximum = this.#maximumBufferedAmount()
-    const current = this.#connectionBufferedAmount()
-    const available = maximum - current
-    return available > this.#sendMessageSize()
-  }
-  #isDataChannelOpen() {
-    return this.#datachannel.readyState === 'open'
-  }
-  async #waitForMinimumWriteThreshold() {
-    return new Promise<void>((resolve) => {
-      const interval = setInterval(() => {
-        if (!this.#isDataChannelOpen()) return
-        if (!this.#isUnderMinimumThreshold()) return
-        clearInterval(interval)
-        resolve()
-      })
-    })
-  }
-  // ----------------------------------------------------------------
-  // WriteInternal
-  // ----------------------------------------------------------------
-  async #writeInternal(value: Uint8Array) {
-    const lock = await this.#mutex.lock()
-    try {
-      const reader = new Buffer.Reader(value)
-      while (this.#isDataChannelOpen()) {
-        await this.#waitForMinimumWriteThreshold()
-        const buffer = reader.read(this.#sendMessageSize())
-        if (this.#isDataChannelOpen() && buffer !== null) {
-          this.#datachannel.send(buffer)
-        } else {
-          break
-        }
-      }
-    } finally {
-      lock.dispose()
-    }
-  }
-  // ----------------------------------------------------------------
-  // CloseInternal
-  // ----------------------------------------------------------------
-  async #closeInternal() {
-    const lock = await this.#mutex.lock()
-    try {
-      if (this.#datachannel.bufferedAmount > 0) {
-        setTimeout(() => this.#closeInternal(), 100)
-      } else {
-        this.#datachannel.close()
-      }
-    } finally {
-      lock.dispose()
-    }
-  }
-  // ----------------------------------------------------------------
-  // ResolveAddress
-  // ----------------------------------------------------------------
-  #resolveAddress(address: string) {
-    return ['loopback:0', 'loopback:1'].includes(address) ? 'localhost' : address
+  public close(): Promise<void> {
+    throw new Runtime.RuntimeNotSupportedException('Net')
   }
 }
