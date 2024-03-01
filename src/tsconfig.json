@@ -1,0 +1,103 @@
+{
+  "extends": "../tsconfig.json",
+  "files": [
+    // Ansi
+    "ansi/index.mts",
+    // Assert
+    "assert/index.mts",
+    // Async
+    "async/index.mts",
+    // Benchmark
+    "benchmark/index.mts",
+    // Browser
+    "browser/index.mts",
+    // Buffer
+    "buffer/index.mts",
+    // Channel
+    "channel/index.mts",
+    // Crypto
+    "crypto/browser/index.mts",
+    "crypto/bun/index.mts",
+    "crypto/deno/index.mts",
+    "crypto/node/index.mts",
+    "crypto/index.mts",
+    // Dns
+    "dns/core/index.mts",
+    "dns/bun/index.mts",
+    "dns/deno/index.mts",
+    "dns/node/index.mts",
+    "dns/index.mts",
+    // Dispose
+    "dispose/index.mts",
+    // Encoding
+    "encoding/index.mts",
+    // Events
+    "events/index.mts",
+    // Fs
+    "fs/core/index.mts",
+    "fs/bun/index.mts",
+    "fs/deno/index.mts",
+    "fs/node/index.mts",
+    "fs/index.mts",
+    // Http
+    "http/browser/index.mts",
+    "http/bun/index.mts",
+    "http/core/index.mts",
+    "http/deno/index.mts",
+    "http/node/index.mts",
+    "http/index.mts",
+    // Hub
+    "hub/index.mts",
+    // Mime
+    "mime/index.mts",
+    // Net
+    "net/bun/index.mts",
+    "net/core/index.mts",
+    "net/deno/index.mts",
+    "net/node/index.mts",
+    // Os
+    "os/index.mts",
+    // Path
+    "path/index.mts",
+    "path/posix/index.mts",
+    "path/windows/index.mts",
+    // Performance
+    "performance/browser/index.mts",
+    "performance/bun/index.mts",
+    "performance/core/index.mts",
+    "performance/deno/index.mts",
+    "performance/node/index.mts",
+    "performance/index.mts",
+    // Process
+    "process/bun/index.mts",
+    "process/core/index.mts",
+    "process/deno/index.mts",
+    "process/node/index.mts",
+    "process/index.mts",
+    // Qs
+    "qs/index.mts",
+    // Rpc
+    "rpc/client/index.mts",
+    "rpc/contract/index.mts",
+    "rpc/service/index.mts",
+    // Runtime
+    "runtime/index.mts",
+    // Stream
+    "stream/index.mts",
+    // Test
+    "test/index.mts",
+    // Url
+    "url/index.mts",
+    // Value
+    "value/index.mts",
+    // Worker
+    "worker/browser/index.mts",
+    "worker/bun/index.mts",
+    "worker/core/index.mts",
+    "worker/deno/index.mts",
+    "worker/node/index.mts",
+    "worker/index.mts",
+    // Main
+    "index.mts"
+  ]
+}
