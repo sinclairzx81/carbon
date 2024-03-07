@@ -117,7 +117,7 @@ export async function test(filter = '') {
 // --------------------------------------------------------------------------
 export async function publish(otp) {
   const { version } = JSON.parse(Fs.readFileSync('package.json', 'utf8'))
-  if(version.includes('-dev')) throw Error(`package version should not include -dev specifier`)
+  if (version.includes('-dev')) throw Error(`package version should not include -dev specifier`)
   await shell(`cd ${targets.build} && npm publish sinclair-carbon-${version}.tgz --access=public --otp ${otp}`)
   await shell(`git tag ${version}`)
   await shell(`git push origin ${version}`)
