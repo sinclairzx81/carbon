@@ -1,5 +1,8 @@
 {
   "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "typeRoots": ["./types"]
+  },
   "files": [
     // Ansi
     "ansi/index.mts",

@@ -21,7 +21,7 @@
     "node": "npm run start:node"
   },
   "name": "@sinclair/carbon",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Compatibility Layer for Node Deno and Bun",
   "keywords": [
     "node",

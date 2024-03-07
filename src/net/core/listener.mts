@@ -36,7 +36,7 @@ export interface ListenOptions {
 export type ListenCallback = (socket: Socket) => unknown
 
 export declare class Listener implements Dispose.Dispose {
-  constructor(...options: never[])
+  constructor(...args: never[])
   [Symbol.asyncDispose](): Promise<void>
   dispose(): Promise<void>
 }
