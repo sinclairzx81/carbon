@@ -4,7 +4,7 @@
 
 <p>Compatibility Layer for Node Deno and Bun</p>
 
-<img src="https://github.com/sinclairzx81/carbon/blob/master/carbon.png?raw=true" />
+<img src="https://github.com/sinclairzx81/carbon/blob/main/carbon.png?raw=true" />
 
 <br />
 <br />
